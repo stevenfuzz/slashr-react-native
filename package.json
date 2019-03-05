@@ -1,0 +1,23 @@
+{
+  "name": "slashr-react-native",
+  "version": "0.0.4",
+  "description": "Slashr Natve Lib",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevenfuzz/slashr-react-native.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stevenfuzz/slashr-react-native/issues"
+  },
+  "homepage": "https://github.com/stevenfuzz/slashr-react-native#readme",
+  "peerDependencies": {
+    "mobx": "^5.9.0",
+    "mobx-react": "^5.4.3"
+  }
+}
