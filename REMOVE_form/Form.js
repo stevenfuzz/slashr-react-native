@@ -23,7 +23,7 @@ export class Form extends React.Component {
     );
   }
 }
-
+  
 const styles = new StyleSheet.create({
     
 });

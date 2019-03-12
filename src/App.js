@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import { Provider } from "mobx-react";
-import { SlashrApp } from 'slashr-react-core';
+import { SlashrApp } from 'slashr-react-native';
 import { createAppContainer } from 'react-navigation';
 
 

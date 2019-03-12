@@ -1,8 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
-import Icon from "./Icon";
 import { withNavigation } from 'react-navigation';
-import { colors, fontStyles } from '../styles/styles';
 
 const Button = class Button extends React.Component {
     constructor(props){
@@ -19,7 +17,7 @@ const Button = class Button extends React.Component {
         let size = this.props.size || "medium";
         let style = {...styles.button,...this.props.style}
         let titleStyle = {...styles.title,...this.props.titleStyle}
-        console.log("LSKDJF");
+
         return (
             <TouchableNativeFeedback
                 onPress={this.handlePress}
@@ -69,7 +67,7 @@ const styles = new StyleSheet.create({
         flexDirection:"row",
         justifyContent: "space-between",
         borderRadius: 4,
-        backgroundColor: colors.primary,
+        backgroundColor: "#1565c0",
         height:36,
         alignContent: "center",
         textAlign: "center",
@@ -86,10 +84,10 @@ const styles = new StyleSheet.create({
         marginRight: "auto"
     },
     title: {
-        ...fontStyles.bold,
+        fontWeight:"600",
         fontSize: 14,
         lineHeight: 36,
-        color: colors.white
+        color: "#FFFFFF"
     }
 });
 

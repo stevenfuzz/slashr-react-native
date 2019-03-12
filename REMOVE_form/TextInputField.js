@@ -14,10 +14,6 @@ const TextInputField = inject("form")(observer(
             this.handleFocus = this.handleFocus.bind(this);
             this.handleBlur = this.handleBlur.bind(this);
             this.activeColor = this.props.activeColor || "#1565c0";
-            this.state = {
-                value: this.props.value || "",
-                hasFocus: false
-            };
             this.labelAnim = new Animated.Value(0);
             this.indicatorAnim = new Animated.Value(0);
         }
@@ -52,17 +48,20 @@ const TextInputField = inject("form")(observer(
             }).start();
         }
         get isActive(){
-            return (this.state.hasFocus || this.state.value !== "") ? true : false
+            console.log("check is active");
+            return (this.element.hasFocus || this.element.value) ? true : false
         }
         handleFocus(){
-            this.setState({
-                hasFocus: true,
-            });
+            this.elmt.focus = true;
+            // this.setState({
+            //     hasFocus: true,
+            // });
         }
         handleBlur(){
-            this.setState({
-                hasFocus: false,
-            });
+            this.elmt.blur = true;
+            // this.setState({
+            //     hasFocus: false,
+            // });
         }
         render() {
             let labelTextStyle = {
