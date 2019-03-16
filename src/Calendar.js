@@ -62,6 +62,8 @@ export class Calendar extends CalendarCore {
 			if (this.props.day && Slashr.utils.date.areDatesSameDay(currDay, this.props.day)){
 				dayTextStyles.push(styles.daySelectedText);
 				dayStyles.push(styles.daySelected);
+				
+				if(this.props.primaryColor) dayStyles.push({backgroundColor: this.props.primaryColor});
 			}
 			days.push(
 				<Touchable
@@ -142,7 +144,8 @@ const defaultStyles = new StyleSheet.create({
 		width: 280,
 		flex: 0,
 		marginRight:"auto",
-		marginLeft: "auto"
+		marginLeft: "auto",
+		paddingBottom:16
 	},
 	header: {
 		flex:0,

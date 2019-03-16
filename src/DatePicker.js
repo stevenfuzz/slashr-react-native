@@ -11,7 +11,9 @@ export const DatePicker = Slashr.connect(
 		constructor(props){
 			super(props);
 
-			this.datePicker = this.props.app.ui.datePicker.create(this.props);
+			this.datePicker = this.props.datePicker || this.props.app.ui.datePicker.create(this.props);
+
+
 			this.startDate = null;
 			this.endDate = null;
 			this.itemIndex = 0;
@@ -24,7 +26,11 @@ export const DatePicker = Slashr.connect(
 			this.handleNextMonthButtonPress = this.handleNextMonthButtonPress.bind(this);
 			this.handleScrollBeginDrag = this.handleScrollBeginDrag.bind(this);
 			this.handleScrollEndDrag = this.handleScrollEndDrag.bind(this);
-			this.dimensions = Dimensions.get('window');
+			if(this.props.width){
+				this.dimensions = {width:this.props.width}
+			}
+			else this.dimensions = Dimensions.get('window');
+			console.log("DIMENSIOTNS DIMENSIONS",this.dimensions);
 			// this.date = new Date();
 			this.initialScrollIndex = 0;
 			this.styles = this.getStyles();
@@ -35,7 +41,6 @@ export const DatePicker = Slashr.connect(
 				viewAreaCoveragePercentThreshold: 50
 			}
 			this.initialize();
-			
 		}
 		
 		getStyles(){
@@ -129,9 +134,10 @@ export const DatePicker = Slashr.connect(
 			return (
 				<View style={[this.styles.calendar,{width: this.dimensions.width}]}>
 					<Calendar
+						{...this.props} 
 						day={day}
 						month={month} 
-				 		onSelectDay={this.handleSelectDay}
+						onSelectDay={this.handleSelectDay}
 				 	/>
 				</View>
 			);
@@ -228,7 +234,6 @@ const defaultStyles = new StyleSheet.create({
 	monthButton:{
 		position:"absolute",
 		left:"50%",
-		
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
