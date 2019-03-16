@@ -107,7 +107,7 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 				  query,
 				  bindArr,
 				  (_, ResultSet) => {
-					  console.log("RESULTS",ResultSet);
+					//  console.log("RESULTS",ResultSet);
 					resolve(ResultSet);
 				  },
 				  (t,err) => {
@@ -120,7 +120,7 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 	}
 	async executeQuery(query, options = {}){
 
-		console.log("query query query",query,options);
+		//console.log("query query query",query,options);
 
 		let self = this;
 
@@ -537,7 +537,7 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 					else{
 						tDate = new Date(value);
 					}
-					if(tDate) ret = tDate.toISOString().substring(0, 19).replace('T', ' ');
+					if(tDate) ret = parseInt((tDate.getTime() / 1000).toFixed(0))
 				}
 				break;
 			case "timestamp":

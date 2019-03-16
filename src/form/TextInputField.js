@@ -7,15 +7,16 @@ const TextInputField = Slashr.connectForm(
     class TextInputField extends React.Component {
         constructor(props){
             super(props);
-
             this.elmt = this.props.form.addElement(props);
             this.handleChangeText = this.handleChangeText.bind(this);
             this.handleFocus = this.handleFocus.bind(this);
             this.handleBlur = this.handleBlur.bind(this);
             this.activeColor = this.props.activeColor || this.props.form.activeColor || "#1565c0";
             this.errorColor = this.props.errorColor || this.props.form.errorColor || "#B00020";
+            this.theme = this.props.theme || this.props.form.theme || "material";
             this.labelAnim = new Animated.Value(0);
             this.indicatorAnim = new Animated.Value(0);
+
         }
         componentDidMount(){
             
@@ -47,6 +48,13 @@ const TextInputField = Slashr.connectForm(
         }
         render() {
             let activeColor = this.elmt.error ? this.errorColor : this.activeColor;
+            let styles = materialStyles;
+            switch(this.theme){
+                case "materialDark":
+                    styles = materialDarkStyles;
+                break;
+            }
+
             let labelTextStyle = {
                 position: 'absolute',
                 left: 12,
@@ -78,11 +86,14 @@ const TextInputField = Slashr.connectForm(
             if(this.elmt.error){
                 helperTextStyle = [helperTextStyle,{color:this.errorColor}];
             }
+
+            let textFieldStyle = styles.textField;
+            if(this.props.backgroundColor) textFieldStyle = [textFieldStyle,{backgroundColor: this.props.backgroundColor}];
             
             return (
                 
                 <View>
-                    <View style={styles.textField}>
+                    <View style={textFieldStyle}>
                         {/* GUIDeS*/ }
                         {/* <View
                             style={{
@@ -134,10 +145,9 @@ const TextInputField = Slashr.connectForm(
 );
 export default TextInputField;
 
-const styles = new StyleSheet.create({
+const defaultStyles = new StyleSheet.create({
     textField:{
         flex:0,
-        backgroundColor: "#EFEFEF",
         borderTopRightRadius: 4,
         borderTopLeftRadius: 4,
         marginBottom:32,
@@ -145,7 +155,6 @@ const styles = new StyleSheet.create({
     },
     textInputCntr:{
         borderBottomWidth:1,
-        borderBottomColor: "#9E9E9E",
     },
     textInput:{
         margin:0,
@@ -174,6 +183,42 @@ const styles = new StyleSheet.create({
         position:"absolute",
         bottom:-20,
         left:12,
+    }
+});
+
+const materialDarkStyles = new StyleSheet.create({
+    ...defaultStyles,
+    textField:{
+        ...defaultStyles.textField,
+        backgroundColor: "rgba(0,0,0,.2)",
+        
+    },
+    textInput:{
+        ...defaultStyles.textInput,
+        color:"#FFFFFF"
+    },
+    textInputCntr:{
+        ...defaultStyles.textInputCntr,
+        borderBottomColor: "#000000",
+    },
+    helperText:{
+        ...defaultStyles.helperText,
+        color:"rgba(0,0,0,0.6)"
+    }
+});
+
+const materialStyles = new StyleSheet.create({
+    ...defaultStyles,
+    textField:{
+        ...defaultStyles.textField,
+        backgroundColor: "#EFEFEF",
+    },
+    textInputCntr:{
+        ...defaultStyles.textInputCntr,
+        borderBottomColor: "#9E9E9E",
+    },
+    helperText:{
+        ...defaultStyles.helperText,
         color:"rgba(0,0,0,0.6)"
     }
 });

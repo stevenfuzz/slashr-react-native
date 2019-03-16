@@ -8,12 +8,13 @@ const SubmitButton = Slashr.connectForm(
         constructor(props){
           super(props);
           this.handlePress = this.handlePress.bind(this);
+          this.backgroundColor = this.props.backgroundColor || this.props.form.activeColor || "#1565c0";
         }
         handlePress(){
           this.props.form.submit();
         }
         render() {
-          return <Button {...this.props} onPress={this.handlePress}/>
+          return <Button backgroundColor={this.backgroundColor} {...this.props} onPress={this.handlePress}/>
         }
       }
 );

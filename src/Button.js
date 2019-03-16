@@ -9,7 +9,7 @@ const Button = class Button extends React.Component {
     }
     handlePress(){
         if(this.props.to){
-            this.props.navigation.navigate(this.props.to);
+            this.props.navigation.navigate(this.props.to, this.props.params || {});
         }
         else if(this.props.onPress) this.props.onPress();
     }
@@ -17,7 +17,7 @@ const Button = class Button extends React.Component {
         let size = this.props.size || "medium";
         let style = {...styles.button,...this.props.style}
         let titleStyle = {...styles.title,...this.props.titleStyle}
-
+        if(this.props.backgroundColor)  style.backgroundColor = this.props.backgroundColor;
         return (
             <TouchableNativeFeedback
                 onPress={this.handlePress}

@@ -18,7 +18,7 @@ export const Form = Slashr.connect(
       this.form.setValues(this.props.values || {})
     }
     componentWillUnmount(){
-      this.form.delete();
+      this.form.remove();
     }
     render() {
       return (

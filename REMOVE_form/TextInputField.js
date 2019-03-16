@@ -30,8 +30,6 @@ const TextInputField = inject("form")(observer(
             }
         }
         handleChangeText(value){
-            console.log(value);
-            
             this.setState({
                 value: value
             });
