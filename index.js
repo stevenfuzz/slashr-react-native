@@ -1,4 +1,4 @@
-// export * from 'slashr-react-core';
+
 export * from './src/Slashr'
 export * from './src/SlashrApp'
 export * from './src/App';

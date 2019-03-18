@@ -20,7 +20,7 @@ export const DatePickerNative = Slashr.connect(
             });
             if (action !== DatePickerAndroid.dismissedAction) {
               // Selected year, month (0-11), day
-             // console.log(year,month,day);
+              
             }
           } catch ({code, message}) {
             console.warn('Cannot open date picker', message);

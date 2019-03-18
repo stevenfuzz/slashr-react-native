@@ -9,7 +9,6 @@ export class Calendar extends CalendarCore {
 	renderMonthHeader() {
 		let styles = this.styles;
 		let monthLabel = Slashr.utils.date.getMonthLabel(this.month);
-		monthLabel = Slashr.utils.str.capitalize(monthLabel);
 		let label = `${monthLabel} ${this.month.getFullYear()}`
 		return (
 			<View style={styles.monthLabel}>
@@ -32,16 +31,8 @@ export class Calendar extends CalendarCore {
 		}
 		return ret;
 	}
-	get styles(){
-		let styles = materialStyles;
-		switch(this.props.theme){
-			case "materialDark":
-				styles = materialDarkStyles;
-			break;
-		}
-		return styles;
-	}
 	renderDays() {
+		// let startDate = this.props.startDate;
 		let currDay = new Date(this.startDay);
 		let weeks = [];
 		let days = [];
@@ -62,8 +53,7 @@ export class Calendar extends CalendarCore {
 			if (this.props.day && Slashr.utils.date.areDatesSameDay(currDay, this.props.day)){
 				dayTextStyles.push(styles.daySelectedText);
 				dayStyles.push(styles.daySelected);
-				
-				if(this.props.primaryColor) dayStyles.push({backgroundColor: this.props.primaryColor});
+				//if(this.props.primaryColor) dayStyles.push({backgroundColor: this.props.primaryColor});
 			}
 			days.push(
 				<Touchable
@@ -77,7 +67,7 @@ export class Calendar extends CalendarCore {
 							<Text style={dayTextStyles}>{currDay.getDate()}</Text>
 						</View>
 						<View style={styles.dayContent}>
-							<Text>{this.dayRenderer(currDay)}</Text>
+							<Text style={styles.dayContentText}>{this.dayRenderer(currDay)}</Text>
 						</View>
 					</View>
 				</Touchable>
@@ -98,7 +88,6 @@ export class Calendar extends CalendarCore {
 		return weeks;
 	}
 	render() {
-		console.log("RENDER CALENDAR",this.props.day);
 		let styles = this.styles;
 		let classNames = ["calendar"];
 		if (this.props.className) classNames.push(this.props.className);
@@ -137,83 +126,81 @@ export class Calendar extends CalendarCore {
 			</View>
 		);
 	}
-}
-
-const defaultStyles = new StyleSheet.create({
-	calendar: {
-		width: 280,
-		flex: 0,
-		marginRight:"auto",
-		marginLeft: "auto",
-		paddingBottom:16
-	},
-	header: {
-		flex:0,
-		flexDirection:"row",
-		justifyContent:"space-around",
-		alignItems:"center",
-		marginLeft:-4,
-		marginRight:-4,
-		marginBottom:-12,
-	},
-	dayHeader:{
-		flex:0,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems:"center"
-	},
-	dayHeaderText:{
-		opacity:.6
-	},
-	week: {
-		flex:0,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems:"center",
-	},
-	cell:{
-		borderRadius:20,
-		height:40,
-		width:40,
-		flex:0,
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center"
-	},
-	cellText:{
-		lineHeight: 20
-	},
-	dayToday:{
-		backgroundColor:"rgba(0,0,0,.1)"
-	},
-	dayText:{
-
-	},
-	dayPreviousMonthText:{
-		opacity:.3
-	},
-	dayNextMonthText:{
-		opacity:.3
-	},
-	monthLabel:{
-		height:64
-	},
-	monthLabelText:{
-		fontWeight:"500",
-		lineHeight:64
-	},
-	daySelected:{
-		backgroundColor: "#1565c0"
-	},
-	daySelectedText:{
-		color: "#FFFFFF"
+	get styles(){
+		let theme = this.props.app.ui.theme;
+		return new StyleSheet.create({
+			calendar: {
+				width: 280,
+				flex: 0,
+				marginRight:"auto",
+				marginLeft: "auto",
+				paddingBottom:16,
+				backgroundColor: theme.color.surface
+			},
+			header: {
+				flex:0,
+				flexDirection:"row",
+				justifyContent:"space-around",
+				alignItems:"center",
+				marginLeft:-4,
+				marginRight:-4,
+				marginBottom:-12,
+			},
+			dayHeader:{
+				flex:0,
+				flexDirection: "row",
+				justifyContent: "space-between",
+				alignItems:"center"
+			},
+			dayHeaderText:{
+				opacity:.6,
+				color: theme.color.onSurface
+			},
+			week: {
+				flex:0,
+				flexDirection: "row",
+				justifyContent: "space-between",
+				alignItems:"center",
+			},
+			cell:{
+				borderRadius:20,
+				height:40,
+				width:40,
+				flex:0,
+				flexDirection: "row",
+				justifyContent: "center",
+				alignItems: "center"
+			},
+			cellText:{
+				lineHeight: 20,
+				color: theme.color.onSurface
+			},
+			dayToday:{
+				backgroundColor:theme.color.utils.rgba(theme.color.onSurface, 0.1)
+			},
+			dayText:{
+				
+			},
+			dayPreviousMonthText:{
+				opacity:.3
+			},
+			dayNextMonthText:{
+				opacity:.3
+			},
+			monthLabel:{
+				height:64
+			},
+			monthLabelText:{
+				fontWeight:"500",
+				lineHeight:64,
+				color: theme.color.onSurface
+			},
+			daySelected:{
+				backgroundColor: theme.color.secondary
+			},
+			daySelectedText:{
+				color: theme.color.onSecondary
+			}
+		});
 	}
-	
-});
-
-const materialStyles = new StyleSheet.create({
-	...defaultStyles
-});
-const materialDarkStyles = new StyleSheet.create({
-	...defaultStyles
-});
+}

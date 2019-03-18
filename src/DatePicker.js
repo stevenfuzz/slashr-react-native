@@ -17,7 +17,6 @@ export const DatePicker = Slashr.connect(
 			this.startDate = null;
 			this.endDate = null;
 			this.itemIndex = 0;
-			console.log(this.datePicker);
 			this.flatListRef = React.createRef();
 			this.renderItem = this.renderItem.bind(this);
 			this.handleSelectDay = this.handleSelectDay.bind(this);
@@ -30,7 +29,6 @@ export const DatePicker = Slashr.connect(
 				this.dimensions = {width:this.props.width}
 			}
 			else this.dimensions = Dimensions.get('window');
-			console.log("DIMENSIOTNS DIMENSIONS",this.dimensions);
 			// this.date = new Date();
 			this.initialScrollIndex = 0;
 			this.styles = this.getStyles();
@@ -59,7 +57,6 @@ export const DatePicker = Slashr.connect(
 			this.monthPreviousButtonAnim = new Animated.Value(this.hasPrevious ? 1 : 0);
 		}
 		updateMonthButtons(){
-			console.log(this.hasPrevious);
 			Animated.timing(this.monthNextButtonAnim, {
                 toValue: (this.hasNext && ! this.isScrolling) ? 1 : 0,
                 duration: 200
@@ -77,7 +74,6 @@ export const DatePicker = Slashr.connect(
 		}
 		get hasPrevious(){
 			let date = new Date(this.calendarRange[this.itemIndex].date);
-			console.log(date,this.startDate);
 			if(date > this.startDate) return true;
 			else return false;
 		}
