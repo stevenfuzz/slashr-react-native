@@ -35,7 +35,7 @@ export const DatePicker = Slashr.connect(
 			this.isScrolling = false;
 			
 			this.viewabilityConfig = {
-				waitForInteraction: true,
+				waitForInteraction: false,
 				viewAreaCoveragePercentThreshold: 50
 			}
 			this.initialize();
@@ -68,14 +68,21 @@ export const DatePicker = Slashr.connect(
 		}
 		get hasNext(){
 			let date = new Date(this.calendarRange[this.itemIndex].date);
-			
-			if(date < this.endDate) return true;
-			else return false;
+			// let year = date.getFullYear();
+			// let month = date.getMonth();
+			// let endYear = this.endDate.getFullYear();
+			// let endMonth = this.endDate.getMonth();
+			// console.log(year,month,endYear,endMonth);
+			return this.props.app.utils.date.isMonthLessThan(date,this.endDate);
+			// if(date < this.endDate) return true;
+			// else return false;
 		}
 		get hasPrevious(){
 			let date = new Date(this.calendarRange[this.itemIndex].date);
-			if(date > this.startDate) return true;
-			else return false;
+			return this.props.app.utils.date.isMonthLessThan(this.startDate,date);
+			// let date = new Date(this.calendarRange[this.itemIndex].date);
+			// if(date > this.startDate) return true;
+			// else return false;
 		}
 		handleScrollBeginDrag(){
 			this.isScrolling = true;
@@ -188,7 +195,7 @@ export const DatePicker = Slashr.connect(
 						keyExtractor={(item) => `${item.date}`}
 						onScrollBeginDrag={this.handleScrollBeginDrag}
 						onScrollEndDrag={this.handleScrollEndDrag}
-						initialNumToRender={2}
+						initialNumToRender={3}
 						horizontal
 						directionalLockEnabled
 						showsHorizontalScrollIndicator={false}

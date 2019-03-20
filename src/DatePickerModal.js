@@ -12,7 +12,6 @@ export const DatePickerModal = Slashr.connect(
       this.datePicker = this.props.app.ui.datePicker.create(this.props);
       this.handleCancelPress = this.handleCancelPress.bind(this);
       this.handleOkPress = this.handleOkPress.bind(this);
-      console.log(this.props.app.ui.theme.color.primary);
     }
    
     // getStyles(){
@@ -34,7 +33,7 @@ export const DatePickerModal = Slashr.connect(
     render() {
       let styles = this.styles; 
       let dimensions = Dimensions.get('window');
-      let width = dimensions.width - 64;
+      let width = dimensions.width - 112;
       let date = this.datePicker.date;
       let dayLabel = Slashr.utils.date.getDayLabel(date, Slashr.utils.date.LABEL_TYPE_SHORT);
       let monthLabel = Slashr.utils.date.getMonthLabel(date, Slashr.utils.date.LABEL_TYPE_SHORT);
@@ -96,8 +95,8 @@ export const DatePickerModal = Slashr.connect(
           flexDirection: "column",
           backgroundColor: "rgba(0,0,0,.4)",
           justifyContent: "center",
-          paddingLeft: 32,
-          paddingRight: 32,
+          paddingLeft: 56,
+          paddingRight: 56,
          
         },
         datePicker:{
@@ -123,13 +122,14 @@ export const DatePickerModal = Slashr.connect(
         headerTextDate:{
           color:theme.color.onSurface,
           fontSize:36,
+          fontWeight:"300",
           lineHeight:40
         },
         buttons:{
           flex:0,
           flexDirection:"row",
           justifyContent:"flex-end",
-          paddingRight:32
+          paddingRight:8
         }
       });
     }

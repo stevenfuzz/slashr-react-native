@@ -1,6 +1,7 @@
 import React from 'react';
 import { Slashr } from "./Slashr";
 import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
+import {Touchable} from './Touchable';
 import { withNavigation } from 'react-navigation';
 
 const Button = Slashr.connect(
@@ -23,9 +24,9 @@ const Button = Slashr.connect(
                 styles = {...styles, ...this.themeStyles[this.props.theme]};
             }
             return (
-                <TouchableNativeFeedback
+                <Touchable
                     onPress={this.handlePress}
-                    background={TouchableNativeFeedback.SelectableBackground()}
+                    // background={TouchableNativeFeedback.SelectableBackground()}
                     // ripple={TouchableNativeFeedback.Ripple("#FFFFFF",false)}
                 >
                     <View style={styles.button}>
@@ -44,7 +45,7 @@ const Button = Slashr.connect(
                         }
                     </View>
                 
-                </TouchableNativeFeedback>
+                </Touchable>
             );
         }
         get styles(){
@@ -68,13 +69,16 @@ const Button = Slashr.connect(
                 titleContainer: {
                     paddingLeft:16,
                     paddingRight:16,
+                    height: 16,
+                    // paddingBottom:10,
+                    // paddingTop: 10,
                     marginLeft: "auto",
                     marginRight: "auto"
                 },
                 title: {
                     fontWeight:"600",
                     fontSize: 14,
-                    lineHeight: 36,
+                    lineHeight:36,
                     color: theme.color.onPrimary
                 }
             });
@@ -84,7 +88,7 @@ const Button = Slashr.connect(
             return {
                 text: StyleSheet.create({
                     button: {
-                        
+                        height:36,
                         borderWidth: 0,
                         shadowOpacity: 0,
                         shadowRadius: 0,
@@ -93,6 +97,8 @@ const Button = Slashr.connect(
                         backgroundColor: "transparent"
                     },
                     title:{
+                        lineHeight:36,
+                        fontWeight:"600",
                         color: theme.color.primary,
                     }
                 })

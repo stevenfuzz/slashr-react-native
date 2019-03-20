@@ -128,8 +128,10 @@ const TextInputField = Slashr.connectForm(
                                 onChangeText={this.handleChangeText}
                                 onFocus={this.handleFocus}
                                 onBlur={this.handleBlur}
+                                autoFocus={this.props.autoFocus || null}
                                 keyboardType={this.props.keyboardType || null}
                                 style={styles.textInput}
+                                
                                 underlineColorAndroid="transparent"
                             />
                         </View>
