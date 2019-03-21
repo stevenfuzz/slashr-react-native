@@ -1,7 +1,9 @@
 import React from 'react';
-import { Animated, View, StyleSheet, Text, TextInput } from 'react-native';
+import { Animated, View, StyleSheet, Text, TextInput, ScrollView, Dimensions } from 'react-native';
 import { Slashr } from "../Slashr";
+import { Touchable } from '../Touchable';
 import { inject, observer } from "mobx-react";
+import Suggestions from './Suggestions';
 
 const TextInputField = Slashr.connectForm(
     class TextInputField extends React.Component {
@@ -17,9 +19,6 @@ const TextInputField = Slashr.connectForm(
             this.labelAnim = new Animated.Value(0);
             this.indicatorAnim = new Animated.Value(0);
 
-        }
-        componentDidMount(){
-            
         }
         componentDidUpdate(){
             this.animate();
@@ -86,14 +85,16 @@ const TextInputField = Slashr.connectForm(
             if(this.elmt.error){
                 helperTextStyle = [helperTextStyle,{color:this.errorColor}];
             }
-
             let textFieldStyle = styles.textField;
             if(this.props.backgroundColor) textFieldStyle = [textFieldStyle,{backgroundColor: this.props.backgroundColor}];
-            
             return (
                 
-                <View>
+                <View style={styles.textFieldWrapper}>
+                    {this.props.suggestionLoader && 
+                        <Suggestions element={this.elmt} {...this.props} />
+                    }
                     <View style={textFieldStyle}>
+                       
                         {/* GUIDeS*/ }
                         {/* <View
                             style={{
@@ -123,8 +124,9 @@ const TextInputField = Slashr.connectForm(
                         <View style={styles.textInputCntr}>
                             <TextInput
                                 name={this.elmt.name}
+                                ret={this.elmt.ref}
                                 // placeholder={this.elmt.label}
-                                value={this.elmt.value}
+                                value={this.elmt.value !== null ? `${this.elmt.value}` : null}
                                 onChangeText={this.handleChangeText}
                                 onFocus={this.handleFocus}
                                 onBlur={this.handleBlur}
@@ -139,7 +141,9 @@ const TextInputField = Slashr.connectForm(
                         <View pointerEvents="none" style={styles.indicatorCntr}>
                             <Animated.View style={indicatorStyle} />
                         </View>
+                       
                     </View>
+                   
                 </View>
             );
         }
@@ -148,12 +152,15 @@ const TextInputField = Slashr.connectForm(
 export default TextInputField;
 
 const defaultStyles = new StyleSheet.create({
+    textFieldWrapper:{
+        flex:0,
+        marginBottom:32,
+    },
     textField:{
         flex:0,
         borderTopRightRadius: 4,
         borderTopLeftRadius: 4,
-        marginBottom:32,
-        position: "relative"
+        
     },
     textInputCntr:{
         borderBottomWidth:1,
