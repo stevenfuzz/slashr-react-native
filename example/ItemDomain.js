@@ -210,9 +210,8 @@ export class ItemListDomain extends Slashr.Domain{
     setItems(items){
         let total = 0;
         // Update the total
-        items.map((item)=>{
+        items.forEach((item)=>{
             total += item.value;
-            return item;
         });
         this.setState({
             items: items,
