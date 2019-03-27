@@ -17,6 +17,9 @@ export const Form = Slashr.connect(
     componentDidMount(){
       this.form.setValues(this.props.values || {})
     }
+    componentDidUpdate(prevProps){
+      if(prevProps.values !== this.props.values) this.form.setValues(this.props.values || {})
+    }
     componentWillUnmount(){
       this.form.remove();
     }

@@ -91,10 +91,10 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 					continue;					
 				}
 				let qry = `CREATE TABLE if not exists items (${rowArr.join(', ')});`;
-				console.log(qry);
+				// console.log(qry);
 				console.warn("Creating new database....");
 				let res = await this.executeRawQuery(qry);
-				console.log("res res res",res, qry);
+				// console.log("res res res",res, qry);
 			}
 		}
 
@@ -469,7 +469,6 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 	}
 	formatColumnSelectValue(value, type){
 		let ret = null;
-		console.log("type type type",type);
 		switch(type.toLowerCase()){
 			case "decimal":
 			case "real":
