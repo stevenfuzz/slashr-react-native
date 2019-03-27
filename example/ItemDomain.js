@@ -60,9 +60,6 @@ export class ItemDomain extends Slashr.Domain{
        if(this.types[key]) return this.types[key];
        else return null;
     }
-	async create(values){
-        return this.create(values);
-    }
     async get(id){
         // Init an item entity by id
         let item = await this.ent.items(id);
