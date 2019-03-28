@@ -13,3 +13,4 @@ export * from './src/DatePicker';
 export * from './src/DatePickerModal';
 export * from './src/Calendar';
 export * from './src/Touchable';
+export * from './src/BarGraph';

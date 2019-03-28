@@ -85,7 +85,7 @@ export class ItemDomain extends Slashr.Domain{
             if(this.utils.date.areDatesSameDay(currDate, values.date)) item.date = currDate;
             else{
                 // Set to end of day...
-                date.setHours(23,59,59,998);
+                date.setHours(23,59,59,0);
                 item.date = date;
             }
         }
@@ -143,7 +143,7 @@ export class ItemListDomainInstances extends Slashr.DomainInstances{
         let endDate = new Date(this.state.date);
         // Get day range
         startDate.setHours(0,0,0,0);
-        endDate.setHours(23,59,59,999);
+        endDate.setDate(endDate.getDate() + 1);
         let whr = qry.exp();
         let bind = {
             startDate: startDate,

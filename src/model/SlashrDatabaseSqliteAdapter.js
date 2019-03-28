@@ -212,7 +212,7 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 		});	
 
 		// console.log(query);
-		// console.log(bindArr);
+		console.log(bindArr);
 
 		let rslt = await this.executeRawQuery(query, bindArr);
 
