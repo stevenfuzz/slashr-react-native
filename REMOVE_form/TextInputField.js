@@ -88,7 +88,7 @@ const TextInputField = inject("form")(observer(
                     outputRange: ["0%", "100%"],
                 }),
             }
-            console.log(this.labelTextStyle);
+
             return (
                 
                 <View>

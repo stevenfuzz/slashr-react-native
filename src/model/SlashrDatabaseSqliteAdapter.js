@@ -56,6 +56,7 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 
 		for(let table in schema.tables){
 			let rowArr = [];
+			let colArr = [];
 			for(let col in schema.tables[table].columns){
 				let vals = schema.tables[table].columns[col];
 				let type = vals.type;
@@ -75,31 +76,150 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 				if(vals.notNull) expArr.push("not null");
 				if(vals.default) expArr.push(`DEFAULT ${vals.default}`);
 				rowArr.push(expArr.join(' '));
+				colArr.push(name);
 			}
 			
 			if(rowArr.length){
+				let doUpdateTable = false;
 				if(currTables[table]){
 					let qry = `
 						PRAGMA table_info(${table})
 					`;
 					let currTableSchema = await this.executeRawQuery(qry);
-					for(let exp of rowArr){
-						if(! currTableSchema.rows._array.indexOf(exp) === -1){
-							throw("TODO UPDATE CURRENT ROW OR TABLE");
+					// Check for changes
+					currTableSchema.rows._array.forEach((col)=>{
+						let hasFoundSchemaCol = false;
+						let schemaCol = null;
+						for(let key in schema.tables[table].columns){
+							let schemaColName = schema.tables[table].columns[key].name || key;
+							//console.log("name name anem",col.name,schemaColName,schemaColName === col.name,schema.tables[table].columns[key]);
+							if(schemaColName === col.name){
+								
+								schemaCol = schema.tables[table].columns[key];
+								//console.log(key,"SET SET SET",schemaCol);
+								break;
+							}
 						}
-					}
-					continue;					
+						if(! schemaCol){
+							//console.log("{alsdkjf",col.name,schema.tables[table].columns);
+							throw("TEST TEST TEST update table missing col");
+							doUpdateTable = true;
+						}
+						else{
+							// console.log(schemaCol, col);
+							let schemaNotNull = schemaCol.notNull ? 1 : 0;
+							if(schemaNotNull !== col.notnull){
+								//doUpdateTable = true;
+							}
+						}
+					});
+
+
+					// for(let exp of rowArr){
+					// 	if(! currTableSchema.rows._array.indexOf(exp) === -1){
+					// 		throw("TODO UPDATE CURRENT ROW OR TABLE");
+					// 	}
+					// }
+					// Continue and don't create table
+					if(! doUpdateTable) continue;					
 				}
-				let qry = `CREATE TABLE if not exists items (${rowArr.join(', ')});`;
-				// console.log(qry);
-				console.warn("Creating new database....");
-				let res = await this.executeRawQuery(qry);
-				// console.log("res res res",res, qry);
+
+
+				
+				if(doUpdateTable){
+					// TODO: if cols changed
+					await this.executeRawQuery(`DROP TABLE IF EXISTS ${table}_old;`);
+					console.log(await this.executeRawQuery(`SELECT * from ITEMS`));
+					await this.executeRawQuery(`ALTER TABLE ${table} RENAME TO ${table}_old;`);
+					await this.executeRawQuery(`CREATE TABLE ${table} (${rowArr.join(', ')});`);
+					await this.executeRawQuery(`
+						INSERT INTO ${table} (${colArr.join(', ')})
+						SELECT ${colArr.join(', ')}
+						FROM ${table}_old;
+					`);
+					await this.executeRawQuery(`DROP TABLE IF EXISTS ${table}_old;`);
+					console.warn(`Updating database table.... ${table}`);
+					doUpdateTable = false;
+					
+				}
+				else{
+					let qry = `CREATE TABLE if not exists items (${rowArr.join(', ')});`;
+					console.warn(`Creating new database table.... ${table}`);
+					let res = await this.executeRawQuery(qry);
+				}
 			}
 		}
-
-		return true;
 	}
+	// async checkSchema(){
+	// 	let schema = this._metadata.config.schema;
+
+	// 	// let t = await this.executeRawQuery("DROP TABLE items;");
+	// 	// console.log(t);
+	// 	// throw("LSKDJF");
+
+	// 	let qry = `
+	// 		SELECT * FROM sqlite_master
+	// 		WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'
+	// 		UNION ALL
+	// 		SELECT * FROM sqlite_temp_master
+	// 		WHERE type IN ('table','view')
+	// 		ORDER BY 1;
+	// 	`;
+	
+	// 	let currTableRes = await this.executeRawQuery(qry);
+		
+	// 	let currTables = {};
+	// 	let rows = currTableRes.rows._array;
+	// 	for(let row of rows){
+	// 		currTables[row.name] = row;
+	// 	}
+
+	// 	for(let table in schema.tables){
+	// 		let rowArr = [];
+	// 		for(let col in schema.tables[table].columns){
+	// 			let vals = schema.tables[table].columns[col];
+	// 			let type = vals.type;
+
+	// 			// TODO: not sure this makes sense.
+	// 			switch(type){
+	// 				case "timestamp":
+	// 					type = "int";
+	// 					if(vals.default && vals.default.toUpperCase() === "CURRENT_TIMESTAMP"){
+	// 						vals.default = "(strftime('%s', 'now'))";
+	// 					}
+	// 			}
+	// 			let name = vals.name || col;
+	// 			if(! vals.type) "Schema Error: No type given";
+	// 			let expArr = [name, type];
+	// 			if(schema.tables[table].primaryKey === name) expArr.push("primary key");
+	// 			if(vals.notNull) expArr.push("not null");
+	// 			if(vals.default) expArr.push(`DEFAULT ${vals.default}`);
+	// 			rowArr.push(expArr.join(' '));
+	// 		}
+			
+	// 		if(rowArr.length){
+	// 			if(currTables[table]){
+	// 				let qry = `
+	// 					PRAGMA table_info(${table})
+	// 				`;
+	// 				let currTableSchema = await this.executeRawQuery(qry);
+	// 				for(let exp of rowArr){
+	// 					if(! currTableSchema.rows._array.indexOf(exp) === -1){
+	// 						throw("TODO UPDATE CURRENT ROW OR TABLE");
+	// 					}
+	// 				}
+	// 				continue;					
+	// 			}
+	// 			let qry = `CREATE TABLE if not exists items (${rowArr.join(', ')});`;
+	// 			// console.log(qry);
+	// 			console.warn("Creating new database....");
+	// 			let res = await this.executeRawQuery(qry);
+	// 			// console.log("res res res",res, qry);
+	// 		}
+	// 	}
+
+	// 	return true;
+	// }
 	async executeRawQuery(query, bindArr = []){
 		let rslt = new Promise((resolve, reject)=>{
 			this.connector.transaction(tx => {
@@ -212,7 +332,7 @@ export default class SlashrDatabaseSqliteAdapter extends slashrDatabase{
 		});	
 
 		// console.log(query);
-		console.log(bindArr);
+		// console.log(bindArr);
 
 		let rslt = await this.executeRawQuery(query, bindArr);
 

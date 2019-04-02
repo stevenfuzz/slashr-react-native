@@ -37,7 +37,7 @@ const TextInputField = Slashr.connectForm(
             }).start();
         }
         get isActive(){
-            return (this.elmt.isFocused || this.elmt.value) ? true : false
+            return (this.elmt.isFocused || this.elmt.value !== null) ? true : false
         }
         handleFocus(){
             this.elmt.focus = true;

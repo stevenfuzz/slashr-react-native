@@ -35,14 +35,31 @@ export const BarGraph = Slashr.connect(
                 if (point.value > max) max = point.value;
             });
 
+            if(this.props.axisYTrendLines){
+                this.props.axisYTrendLines.map((point) => {
+                    if (point.value > max) max = point.value;
+                });
+            }
 
             if (!interval) {
                 // Add some padding to max
-                max = max + (max * .1);
+                // max = Math.ceil(max + (max * .1));
                 if (!tickCount) tickCount = 5;
+                // Make sure interval has last tick
                 interval = Math.ceil(max / tickCount);
             }
-            else throw ("SLDKJFSLDKJFLKJF");
+
+            // Calculate the tickcount based on interval and max
+            let hasTicks = (interval && max) ? false : true;
+            let tickVal = min;
+            tickCount = 0;
+            while(! hasTicks){
+                tickCount++;
+                tickVal += interval;
+                if(tickVal > max) hasTicks = true;
+            }
+            // Set max to the tickval
+            max = tickVal;
 
             this.axis.y = {
                 min: min,
@@ -50,108 +67,56 @@ export const BarGraph = Slashr.connect(
                 interval: interval,
                 tickCount: tickCount,
             };
-            this.data = data.map((point)=>{
+            this.data = data.map((point) => {
                 point.anim = new Animated.Value(0);
                 return point;
             });
+            this.axisYTrendLines = this.props.axisYTrendLines || [];
             this.lineAnimations = [];
 
         }
         componentDidMount() {
             this.animate();
-            // this.update();
-            //console.log("MOUNT!!!!!!");
         }
 
         componentDidUpdate(prevProps) {
-            
             this.animate();
         }
-        // keyboardHideListener() {
-        //     this.keyboardHeight = 0;
-        //     this.handleLayoutChange();
-        // }
-        // keyboardShowListener(event) {
-        //     this.keyboardHeight = event.endCoordinates.height;
-        //     this.handleLayoutChange();
-        // }
-        // handleLayoutChange() {
-        //     if (!this.suggestionsRef) return;
-        //     this.suggestionsRef.measure((fx, fy, width, height, px, py) => {
-        //         let window = Dimensions.get('window');
-        //         let totalHeight = py + height;
-        //         let maxHeight = null;
-        //         let viewHeight = window.height - this.keyboardHeight;
-        //         if (totalHeight > viewHeight) {
-        //             maxHeight = height - (totalHeight - viewHeight) - 16;
-        //         }
-        //         this.elmt.setState({
-        //             suggestionsMaxHeight: maxHeight
-        //         });
-        //     })
-        // }
-        // async suggestionLoader() {
-        //     if (!this.props.suggestionLoader) return [];
-        //     let suggestions = await this.props.suggestionLoader(this.elmt.value || "");
-        //     this.elmt.setState({
-        //         suggestions: suggestions,
-        //         hasSuggestions: (suggestions.length ? true : false)
-        //     });
-        //     this.animate();
-        // }
-        // handleElementEvent(type) {
-        //     switch (type) {
-        //         case "change":
-        //             this.suggestionLoader();
-        //             break;
-        //     }
-        // }
-        // renderSuggestion(suggestion) {
-        //     if (!this.props.renderSuggestion) throw ("Input Error: renderSuggestions required");
-        //     let ret = this.props.renderSuggestion(suggestion, this.elmt, this.elmt.form);
-        //     return ret;
-        // }
-        // suggestionKeyExtractor(suggestion) {
-        //     if (!this.props.suggestionKeyExtractor) throw ("Input Error: suggestionKeyExtractor required");
-        //     let ret = this.props.suggestionKeyExtractor(suggestion);
-        //     return ret;
-        // }
-        // handlePress(suggestion) {
-        //     if (!this.props.onSelectSuggestion) throw ("Input Error: onSelectSuggestion required");
-        //     this.props.onSelectSuggestion(suggestion, this.elmt, this.elmt.form);
-        // }
         animate() {
-            this.data.forEach((line)=>{
+            this.data.forEach((line) => {
                 Animated.timing(line.anim, {
                     toValue: 1,
                     duration: 1000
                 }).start();
             });
-            
+
         }
-        // get doShow() {
-        //     return this.elmt.state.hasSuggestions && this.elmt.focus;
-        // }
         render() {
             this.init();
             let styles = this.styles;
-            
-            // if (this.elmt.state.suggestionsMaxHeight) suggestionsStyle.maxHeight = this.elmt.state.suggestionsMaxHeight;
-            
             let axisYTicks = [];
             let tickVal = this.axis.y.min;
-            for(let t = 0; t <= this.axis.y.tickCount; t++){
+            for (let t = 0; t <= this.axis.y.tickCount; t++) {
                 axisYTicks.push({
                     value: tickVal
                 });
                 tickVal += this.axis.y.interval;
             }
+            // Check if trendlines exist,
+            // If bigger than max, set as max
+            if(this.axisYTrendLines){
+                this.axisYTrendLines.map((point) => {
+                    axisYTicks.push({
+                        value: point.value,
+                        isTrendLine: true
+                    });
+                });
+            }
+            let axisXLabelTextStyle = [styles.axisXLabelText];
+            if(this.props.axisXLabelTextStyle) axisXLabelTextStyle.push(this.props.axisXLabelTextStyle);
 
-            console.log("ticks",axisYTicks);
-
-
-
-            
+            let axisYLabelTextStyle = [styles.axisYLabelText];
+            if(this.props.axisYLabelTextStyle) axisYLabelTextStyle.push(this.props.axisYLabelTextStyle);
             return (
                 <ScrollView>
                     <View
@@ -162,28 +127,49 @@ export const BarGraph = Slashr.connect(
                                 {this.data.map((point, i) => {
                                     return (
                                         <View style={styles.axisXLabel} key={`axisXLabel${i}`}>
-                                            <Text style={styles.axisXLabelText}>{point.label}</Text>
+                                            <Text style={axisXLabelTextStyle}>{point.label}</Text>
                                         </View>
                                     );
                                 })}
                             </View>
                             <View style={styles.lines}>
                                 {axisYTicks.map((tick, i) => {
-                                    let style = [styles.axisYTickLine];
+                                    let style = [styles.axisYTick];
+                                    let tickLineStyle = [styles.axisYTickLine];
+                                    let nStyle = {};
+                                    let label = " ";
+                                    if(! tick.isTrendLine){
+                                        label = i * this.axis.y.interval;
+                                    }
+                                    else{
+                                        tickLineStyle.push(styles.axisYTrendLine);
+                                    }
                                     let widthPct = tick.value ? parseInt((tick.value / this.axis.y.max) * 100) : 0;
-                                    console.log("tick line left",widthPct);
-                                    style.push({
-                                        left: `${widthPct}%`
-                                    });
+                                    nStyle.left = `${widthPct}%`;
+                                    style.push(nStyle);
                                     return (
-                                        <View 
+                                        <View
                                             style={style}
-                                            key={`axisYTickLine${i}-${widthPct}`}
-                                        />
+                                            key={`axisYTick${i}-${widthPct}`}
+                                        >
+                                            <Text
+                                                style={axisYLabelTextStyle}
+
+                                            >
+                                                {label}
+                                            </Text>
+                                            <View
+                                                style={tickLineStyle}
+                                                key={`axisYTickLine${i}-${widthPct}`}
+                                            >
+
+                                            </View>
+                                            
+                                        </View>
                                     );
                                 })}
                                 {this.data.map((point, i) => {
-                                    
+
                                     let widthPct = point.value ? parseInt((point.value / this.axis.y.max) * 100) : 0;
                                     let lineStyle = [styles.line];
                                     //console.log(point.anim);
@@ -204,20 +190,17 @@ export const BarGraph = Slashr.connect(
                         </View>
                     </View>
                 </ScrollView>
-
-
-
             );
         }
         get styles() {
             let theme = this.props.app.ui.theme;
             let color = theme.color;
             return new StyleSheet.create({
-
                 graph: {
-                    
                     flex: 1,
-                    margin:16,
+                    margin: 16,
+                    marginTop: 40,
+                    marginRight:32,
                     flexDirection: "column",
                     justifyContent: "space-evenly"
                 },
@@ -225,37 +208,56 @@ export const BarGraph = Slashr.connect(
                     flex: 0,
                     flexDirection: "row"
                 },
-                axisYTickLine:{
-                    flex:1,
-                    position:"absolute",
-                    top: 0,
-                    bottom:0,
-                    width:1,
-                    backgroundColor: color.utils.rgba(color.onBackground,.1),
+                axisYTick: {
+                    flex: 1,
+                    position: "absolute",
+                    top: -24,
+                    bottom: 8,
+                    overflow: "visible"
                     // height:"100%"
                 },
-                axisXLabels:{
-                    paddingRight:12
+                axisYTickLine: {
+                    flex: 1,
+                    height:"100%",
+                    width: 1,
+                    backgroundColor: color.utils.rgba(color.onBackground, .1),
+                    overflow: "visible"
+                    // height:"100%"
                 },
-                axisXLabel:{
-                    height:24,
+                axisYTrendLine: {
+                    backgroundColor: color.utils.rgba(color.secondaryLight, .5),
+                    zIndex:2
+                },
+                axisYLabelText: {
+                    position:"relative",
+                    left:"-50%",
+                    lineHeight: 24,
+                    color: color.utils.rgba(color.onBackground, .6),
+                    fontSize: 10,
+                },
+                axisXLabels: {
+                    paddingRight: 16
+                },
+                axisXLabel: {
+                    height: 32,
                     marginBottom: 8,
-                    
                 },
-                axisXLabelText:{
-                    lineHeight:24,
+                axisXLabelText: {
+                    width: "100%",
+                    lineHeight: 32,
                     color: color.onBackground,
-                    fontSize:12
+                    fontSize: 12,
+                    textAlign:"right"
                 },
-                lines:{
-                    flex:1
+                lines: {
+                    flex: 1
                 },
                 line: {
-                    position:"relative",
+                    position: "relative",
                     flex: 1,
                     flexGrow: 1,
                     backgroundColor: color.primary,
-                    height: 24,
+                    height: 32,
                     marginBottom: 8
                 }
             });
